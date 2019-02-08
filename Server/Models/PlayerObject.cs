@@ -1937,7 +1937,7 @@ namespace Server.Models
                         character.Account.GlobalTime = SEnvir.Now.AddMinutes(count);
                         break;
                     #endregion
-                    #region @MOVE <XCord> <YCord>
+                    #region @MOVE <?XCord> <?YCord>
                     case "MOVE":
                         if (!Character.Account.TempAdmin && Stats[Stat.TeleportRing] <= 0) return;
 
@@ -1945,18 +1945,17 @@ namespace Server.Models
                         {
                             Teleport(CurrentMap, CurrentMap.GetRandomLocation());
                         }
-
                         if (int.TryParse(parts[1], out int xCord) && int.TryParse(parts[2], out int yCord))
                         {
                             if (!Teleport(CurrentMap, new Point(xCord, yCord)))
                             {
-                                Connection.ReceiveChat("Move failed. Please try again.", MessageType.Hint);
+                                Connection.ReceiveChat("Movement failed. Invalid location.", MessageType.Hint);
                             }
                             TeleportTime = SEnvir.Now.AddMinutes(5);
                         }
                         else
                         {
-                            Connection.ReceiveChat("Move command should be @MOVE x y", MessageType.Hint);
+                            Connection.ReceiveChat("Invalid use of @MOVE <xCord> <yCord>", MessageType.Hint);
                         }
                         break;
                     #endregion
