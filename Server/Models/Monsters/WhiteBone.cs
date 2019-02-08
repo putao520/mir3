@@ -27,6 +27,17 @@ namespace Server.Models.Monsters
             ActionTime = SEnvir.Now.AddSeconds(1);
         }
 
+        public override int Attack(MapObject ob, int power, Element element)
+        {
+            //if (MonsterInfo.Flag == MonsterFlag.JinSkeleton)
+            //{
+            //    AttackMagic(MagicType.HalfMoon, Element.Phantom, false, power);
+            //    return power;        
+            //}
+            //else 
+            return base.Attack(ob, power, element);
+        }
+
         public override bool CanBeSeenBy(PlayerObject ob)
         {
             return Visible && base.CanBeSeenBy(ob);

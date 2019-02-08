@@ -1311,6 +1311,7 @@ namespace Server.Models
 
                 switch (parts[0].ToUpper())
                 {
+                    #region @ROLL
                     case "ROLL":
                         if (GroupMembers == null) return;
 
@@ -1323,63 +1324,81 @@ namespace Server.Models
                         foreach (PlayerObject member in GroupMembers)
                             member.Connection.ReceiveChat(string.Format(member.Connection.Language.DiceRoll, Name, result, count), MessageType.Group);
                         break;
+                    #endregion
+                    #region @EXTRACTORLOCK
                     case "EXTRACTORLOCK":
                         ExtractorLock = !ExtractorLock;
 
                         Connection.ReceiveChat(ExtractorLock ? "Extraction Enabled" : "Extraction Locked", MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL3
                     case "ENABLELEVEL3":
                         CompanionLevelLock3 = !CompanionLevelLock3;
 
                         Connection.ReceiveChat(string.Format(CompanionLevelLock3 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 3), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL5
                     case "ENABLELEVEL5":
                         CompanionLevelLock5 = !CompanionLevelLock5;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock5 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 5), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL7
                     case "ENABLELEVEL7":
                         CompanionLevelLock7 = !CompanionLevelLock7;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock7 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 7), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL10
                     case "ENABLELEVEL10":
                         CompanionLevelLock10 = !CompanionLevelLock10;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock10 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 10), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL11
                     case "ENABLELEVEL11":
                         CompanionLevelLock11 = !CompanionLevelLock11;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock11 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 11), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL13
                     case "ENABLELEVEL13":
                         CompanionLevelLock13 = !CompanionLevelLock13;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock13 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 13), MessageType.System);
                         break;
+                    #endregion
+                    #region @ENABLELEVEL15
                     case "ENABLELEVEL15":
                         CompanionLevelLock15 = !CompanionLevelLock15;
                         Connection.ReceiveChat(string.Format(CompanionLevelLock15 ? Connection.Language.CompanionSkillEnabled : Connection.Language.CompanionSkillDisabled, 15), MessageType.System);
                         break;
+                    #endregion
+                    #region @ALLOWTRADE
                     case "ALLOWTRADE":
                         Character.Account.AllowTrade = !Character.Account.AllowTrade;
                         Connection.ReceiveChat(Character.Account.AllowTrade ? Connection.Language.TradingEnabled : Connection.Language.TradingDisabled, MessageType.System);
                         break;
+                    #endregion
+                    #region @BLOCKWHISPER
                     case "BLOCKWHISPER":
                         BlockWhisper = !BlockWhisper;
                         Connection.ReceiveChat(BlockWhisper ? Connection.Language.WhisperDisabled : Connection.Language.WhisperEnabled, MessageType.System);
                         break;
+                    #endregion
+                    #region @ALLOWGUILD
                     case "ALLOWGUILD":
                         Character.Account.AllowGuild = !Character.Account.AllowGuild;
                         Connection.ReceiveChat(Character.Account.AllowGuild ? Connection.Language.GuildInviteEnabled : Connection.Language.GuildInviteDisabled, MessageType.System);
                         break;
+                    #endregion
+                    #region @LEAVEGUILD
                     case "LEAVEGUILD":
                         GuildLeave();
                         break;
-                    case "RECALL":
-                        if (!Character.Account.TempAdmin) return;
-                        if (parts.Length < 2) return;
-
-                        player = SEnvir.GetPlayerByCharacter(parts[1]);
-
-                        player?.Teleport(CurrentMap, Functions.Move(CurrentLocation, Direction));
-                        break;
+                    #endregion
+                    #region @ALLOWRECALL
                     case "ALLOWRECALL":
                         Character.Account.AllowGroupRecall = !Character.Account.AllowGroupRecall;
                         Connection.ReceiveChat(Character.Account.AllowGroupRecall ? Connection.Language.GroupRecallEnabled : Connection.Language.GroupRecallDisabled, MessageType.System);
@@ -1387,6 +1406,8 @@ namespace Server.Models
                         foreach (SConnection con in Connection.Observers)
                             con.ReceiveChat(Character.Account.AllowGroupRecall ? con.Language.GroupRecallEnabled : con.Language.GroupRecallDisabled, MessageType.System);
                         break;
+                    #endregion
+                    #region @GROUPRECALL
                     case "GROUPRECALL":
                         if (Stats[Stat.RecallSet] <= 0) return;
 
@@ -1465,6 +1486,15 @@ namespace Server.Models
 
                         Character.GroupRecallTime = SEnvir.Now.AddMinutes(3);
                         break;
+                    #endregion
+                    #region @CLEARBELT
+                    case "CLEARBELT":
+                        for (int i = Character.BeltLinks.Count - 1; i >= 0; i--)
+                            Character.BeltLinks[i].Delete();
+                        break;
+                    #endregion
+
+                    #region @OBSERVER
                     case "OBSERVER":
                         if (!Character.Account.TempAdmin) return;
                         Observer = !Observer;
@@ -1472,10 +1502,14 @@ namespace Server.Models
                         AddAllObjects();
                         RemoveAllObjects();
                         break;
+                    #endregion
+                    #region @GAMEMASTER
                     case "GAMEMASTER":
                         if (!Character.Account.TempAdmin) return;
                         GameMaster = !GameMaster;
                         break;
+                    #endregion
+                    #region @GOLDBOT <Name>
                     case "GOLDBOT":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1488,6 +1522,8 @@ namespace Server.Models
                         target.Account.GoldBot = !target.Account.GoldBot;
                         Connection.ReceiveChat($"Gold Bot [{target.CharacterName}] - [{target.Account.GoldBot}]", MessageType.System);
                         break;
+                    #endregion
+                    #region @ITEMBOT <Name>
                     case "ITEMBOT":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1500,6 +1536,8 @@ namespace Server.Models
                         target.Account.ItemBot = !target.Account.ItemBot;
                         Connection.ReceiveChat($"Item Bot [{target.CharacterName}] - [{target.Account.ItemBot}]", MessageType.System);
                         break;
+                    #endregion
+                    #region @LEVEL <?Name> <Amount>
                     case "LEVEL":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1523,6 +1561,8 @@ namespace Server.Models
                         player.Level = value;
                         player.LevelUp();
                         break;
+                    #endregion
+                    #region @GOTO <Name>
                     case "GOTO":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1533,6 +1573,18 @@ namespace Server.Models
 
                         Teleport(player.CurrentMap, player.CurrentLocation);
                         break;
+                    #endregion
+                    #region @RECALL <Name>
+                    case "RECALL":
+                        if (!Character.Account.TempAdmin) return;
+                        if (parts.Length < 2) return;
+
+                        player = SEnvir.GetPlayerByCharacter(parts[1]);
+
+                        player?.Teleport(CurrentMap, Functions.Move(CurrentLocation, Direction));
+                        break;
+                    #endregion
+                    #region @GIVESKILLS <Name>
                     case "GIVESKILLS":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1570,15 +1622,16 @@ namespace Server.Models
                         }
 
                         player.RefreshStats();
-
                         break;
+                    #endregion
+
+                    #region @SETCOMPANIONVALUE <Level> <Stat> <Amount>
                     case "SETCOMPANIONVALUE":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
 
-                        Stat stat;
                         if (!int.TryParse(parts[1], out level)) return;
-                        if (!Enum.TryParse(parts[2], out stat)) return;
+                        if (!Enum.TryParse(parts[2], out Stat stat)) return;
                         if (!int.TryParse(parts[3], out value)) return;
 
                         if (Companion == null) return;
@@ -1621,6 +1674,61 @@ namespace Server.Models
                             Level15 = Companion.UserCompanion.Level15
                         });
                         break;
+                    #endregion
+                    #region @MOB <Name> <?Amount>
+                    case "MOB": //@MOB Chicken 50
+                        if (!Character.Account.TempAdmin) return;
+                        if (parts.Length < 2) return;
+
+                        MonsterInfo monInfo = SEnvir.MonsterInfoList.Binding.FirstOrDefault(x => x.MonsterName.Replace(" ", string.Empty).ToUpper() == parts[1].ToUpper());
+                        if (monInfo == null)
+                        {
+                            Connection.ReceiveChat(string.Format("Could not find monster {0}.", parts[1]), MessageType.Hint);
+                            return;
+                        }
+
+                        int monAmount = !int.TryParse(parts[2], out int tempMonAmount) ? 1 : tempMonAmount;
+                        Cell cell = CurrentMap.GetCell(Functions.Move(CurrentLocation, Direction));
+                        if (cell != null && cell.Movements == null)
+                        {
+                            for (int i = 0; i < monAmount; i++)
+                            {
+                                MonsterObject ob = MonsterObject.GetMonster(monInfo);
+                                if (!ob.Spawn(CurrentMap.Info, cell.Location))
+                                    ob.Spawn(CurrentMap.Info, cell.Location);
+                            }
+                        }
+                        break;
+                    #endregion
+                    #region @ADDSTAT <EquipmentType> <Stat> <Amount>
+                    case "ADDSTAT": //@ADDSTAT Weapon CritChance 50
+                        if (!Character.Account.TempAdmin) return;
+                        if (parts.Length < 4 || !Enum.TryParse(parts[1], out EquipmentSlot slotIn))
+                        {
+                            Connection.ReceiveChat("(!) Error parse: ISTAT <EquipmentSlot> <Stat> <Amount>", MessageType.GMWhisperIn);
+                            return;
+                        }
+                        else if (Equipment[(byte)slotIn] == null)
+                        {
+                            Connection.ReceiveChat(string.Format("(!) Please equip a {0} and try again.", slotIn), MessageType.GMWhisperIn);
+                            return;
+                        }
+                        if (!Enum.TryParse(parts[2], out Stat statIn))
+                        {
+                            Connection.ReceiveChat(string.Format("(!) Error Parse: ISTAT {0} <StatType> <Amount>", slotIn), MessageType.GMWhisperIn);
+                            return;
+                        }
+                        if (!int.TryParse(parts[3], out int amountIn))
+                        {
+                            Connection.ReceiveChat(string.Format("(!) Error Parse: ISTAT {0} {1} <amount>", slotIn, statIn), MessageType.GMWhisperIn);
+                            return;
+                        }
+                        Equipment[(byte)slotIn].AddStat(statIn, amountIn, StatSource.Other);
+                        Equipment[(byte)slotIn].StatsChanged();
+                        RefreshStats();
+                        break;
+                    #endregion
+                    #region @MAKE <ItemName> <?Amount>
                     case "MAKE":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1651,6 +1759,9 @@ namespace Server.Models
                         }
 
                         break;
+                    #endregion
+                    
+                    #region @GCCOLLECT
                     case "GCCOLLECT":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1660,11 +1771,15 @@ namespace Server.Models
 
                         Connection.ReceiveChat($"[GC COLLECT] {(Time.Now - time).Ticks / TimeSpan.TicksPerMillisecond}ms", MessageType.System);
                         break;
+                    #endregion
+                    #region @CLEARIPBLOCKS
                     case "CLEARIPBLOCKS":
                         if (!Character.Account.TempAdmin) return;
 
                         SEnvir.IPBlocks.Clear();
                         break;
+                    #endregion
+                    #region @REBOOT
                     case "REBOOT":
                         if (!Character.Account.TempAdmin) return;
 
@@ -1674,6 +1789,8 @@ namespace Server.Models
 
                         Connection.ReceiveChat($"[Reboot Command] {(Time.Now - time).Ticks / TimeSpan.TicksPerMillisecond}ms", MessageType.System);
                         break;
+                    #endregion
+                    #region @GIVEGAMEGOLD <Name> <Amount>
                     case "GIVEGAMEGOLD":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
@@ -1704,6 +1821,8 @@ namespace Server.Models
                         Connection.ReceiveChat(string.Format("[GIVE GAME GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
 
                         break;
+                    #endregion
+                    #region @REMOVEGAMEGOLD <Name> <Amount>
                     case "REMOVEGAMEGOLD":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
@@ -1733,6 +1852,8 @@ namespace Server.Models
 
                         Connection.ReceiveChat(string.Format("[REMOVE GAME GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
                         break;
+                    #endregion
+                    #region @TAKEGAMEGOLD <Name> <Amount>
                     case "TAKEGAMEGOLD":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
@@ -1749,6 +1870,8 @@ namespace Server.Models
 
                         Connection.ReceiveChat(string.Format("[TAKE GAME GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
                         break;
+                    #endregion
+                    #region @REFUNDGAMEGOLD <Name> <Amount>
                     case "REFUNDGAMEGOLD":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
@@ -1765,6 +1888,8 @@ namespace Server.Models
 
                         Connection.ReceiveChat(string.Format("[REFUND GAME GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
                         break;
+                    #endregion
+                    #region @REFUNDHUNTGOLD <Name> <Amount>
                     case "REFUNDHUNTGOLD":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 3) return;
@@ -1781,6 +1906,8 @@ namespace Server.Models
 
                         Connection.ReceiveChat(string.Format("[REFUND HUNT GOLD] {0} Amount: {1}", character.CharacterName, count), MessageType.System);
                         break;
+                    #endregion
+                    #region @CHATBAN <Name>
                     case "CHATBAN":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1794,6 +1921,8 @@ namespace Server.Models
 
                         character.Account.ChatBanExpiry = SEnvir.Now.AddMinutes(count);
                         break;
+                    #endregion
+                    #region @GLOBALBAN <Name> <Amount>
                     case "GLOBALBAN":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1807,25 +1936,45 @@ namespace Server.Models
 
                         character.Account.GlobalTime = SEnvir.Now.AddMinutes(count);
                         break;
+                    #endregion
+                    #region @MOVE <XCord> <YCord>
                     case "MOVE":
-                        //If Is GM or Teleport Ring
+                        if (!Character.Account.TempAdmin && Stats[Stat.TeleportRing] <= 0) return;
+
+                        if (parts.Length < 2) //parts[0] == @move 
+                        {
+                            Teleport(CurrentMap, CurrentMap.GetRandomLocation());
+                        }
+
+                        if (int.TryParse(parts[1], out int xCord) && int.TryParse(parts[2], out int yCord))
+                        {
+                            if (!Teleport(CurrentMap, new Point(xCord, yCord)))
+                            {
+                                Connection.ReceiveChat("Move failed. Please try again.", MessageType.Hint);
+                            }
+                            TeleportTime = SEnvir.Now.AddMinutes(5);
+                        }
+                        else
+                        {
+                            Connection.ReceiveChat("Move command should be @MOVE x y", MessageType.Hint);
+                        }
                         break;
-                    case "MAP":
+                    #endregion
+                    #region @MAPMOVE <MapFileName>
+                    case "MAPMOVE":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
 
-                        MapInfo info = SEnvir.MapInfoList.Binding.FirstOrDefault(x => string.Compare(x.FileName, parts[1], StringComparison.OrdinalIgnoreCase) == 0);
+                        MapInfo mapInfo = SEnvir.MapInfoList.Binding.FirstOrDefault(x => string.Compare(x.FileName, parts[1], StringComparison.OrdinalIgnoreCase) == 0);
 
-                        Map map = SEnvir.GetMap(info);
+                        Map map = SEnvir.GetMap(mapInfo);
 
                         if (map == null) return;
 
                         Teleport(map, map.GetRandomLocation());
                         break;
-                    case "CLEARBELT":
-                        for (int i = Character.BeltLinks.Count - 1; i >= 0; i--)
-                            Character.BeltLinks[i].Delete();
-                        break;
+                    #endregion
+                    #region @FORCEWAR <CastleIndex>
                     case "FORCEWAR":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1840,6 +1989,8 @@ namespace Server.Models
 
                         SEnvir.StartConquest(castle, true);
                         break;
+                    #endregion
+                    #region @FORCEENDWAR <CastleIndex>
                     case "FORCEENDWAR":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1856,6 +2007,8 @@ namespace Server.Models
 
                         war.EndTime = DateTime.MinValue;
                         break;
+                    #endregion
+                    #region @TAKECASTLE <CastleIndex>
                     case "TAKECASTLE":
                         if (!Character.Account.TempAdmin) return;
                         if (parts.Length < 2) return;
@@ -1914,6 +2067,7 @@ namespace Server.Models
                             user.ApplyCastleBuff();
 
                         break;
+                        #endregion
                 }
 
             }
@@ -3152,7 +3306,7 @@ namespace Server.Models
 
 
             if (Teleport(Character.Partner.Player.CurrentMap, Character.Partner.Player.CurrentMap.GetRandomLocation(Character.Partner.Player.CurrentLocation, 10)))
-                Character.MarriageTeleportTime = SEnvir.Now.AddSeconds(120);
+                Character.MarriageTeleportTime = SEnvir.Now.Add(Config.WeddingRingTeleportTime);
         }
 
         public void MarriageRemoveRing()
@@ -16642,7 +16796,6 @@ namespace Server.Models
 
             Enqueue(new S.MagicLeveled { InfoIndex = magic.Info.Index, Level = magic.Level, Experience = magic.Experience });
         }
-
         public override int Pushed(MirDirection direction, int distance)
         {
             UserMagic magic;

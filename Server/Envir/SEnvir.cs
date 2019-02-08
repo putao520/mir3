@@ -2789,11 +2789,11 @@ namespace Server.Envir
                 return;
             }
 
-            if (!account.Activated)
-            {
-                con.Enqueue(new S.Login { Result = LoginResult.AccountNotActivated });
-                return;
-            }
+            //if (!account.Activated)
+            //{
+            //    con.Enqueue(new S.Login { Result = LoginResult.AccountNotActivated });
+            //    return;
+            //}
 
             if (!admin && account.Banned)
             {
