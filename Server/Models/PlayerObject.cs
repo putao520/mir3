@@ -1624,7 +1624,34 @@ namespace Server.Models
                         player.RefreshStats();
                         break;
                     #endregion
+                    #region @CLEARBAG
+                    case "CLEARBAG":
+                        if (!Character.Account.TempAdmin) return;
 
+                        for (int i = 0; i < Inventory.Length; i++)
+                        {
+                            Inventory[i].Delete();
+                        }
+                        break;
+                    #endregion
+                    #region @CLEARPKPOINT <?Name>
+                    case "CLEARPKPOINT":
+                        if (!Character.Account.TempAdmin) return;
+
+                        if (parts.Length < 2)
+                        {
+                            player = this;
+                        }
+                        else
+                        {
+                            player = SEnvir.GetPlayerByCharacter(parts[1]);
+                        }
+
+                        BuffInfo buff = player.Buffs.FirstOrDefault(x => x.Type == BuffType.PKPoint);
+                        if (buff != null) player.Buffs.Remove(buff);
+
+                        break;
+                    #endregion
                     #region @SETCOMPANIONVALUE <Level> <Stat> <Amount>
                     case "SETCOMPANIONVALUE":
                         if (!Character.Account.TempAdmin) return;
@@ -1760,7 +1787,7 @@ namespace Server.Models
 
                         break;
                     #endregion
-                    
+
                     #region @GCCOLLECT
                     case "GCCOLLECT":
                         if (!Character.Account.TempAdmin) return;
@@ -17322,7 +17349,6 @@ namespace Server.Models
 
             BuffAdd(BuffType.Brown, Config.BrownDuration, new Stats { [Stat.Brown] = 1 }, false, false, TimeSpan.Zero);
         }
-
 
         public void IncreasePKPoints(int count)
         {
